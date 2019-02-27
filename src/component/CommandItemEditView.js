@@ -1,9 +1,9 @@
 import React from 'react'
-import { Text, TextInput, View, StyleSheet } from 'react-native'
+import { Text, TextInput, View, StyleSheet, ScrollView, Alert } from 'react-native'
 import Modal from 'react-native-modal'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { SubmitButton } from './'
-import { w, WHITE, BLACK, COLOR_2 } from '../constant/constants'
+import { SubmitButton, IconButton, CurcleButton } from './'
+import { w, WHITE, BLACK, COLOR_2, COLOR_5 } from '../constant/constants'
 import Storage from '../data/Data'
 
 const CommandItemEditView = ({
@@ -40,23 +40,48 @@ const CommandItemEditView = ({
     })
   }
   this.addPerson = () => {
+    if (!parent.state.command.person || parent.state.command.person.length === 0) {
+      Alert.alert(
+        'Внимание',
+        'Необходимо указать имя участка',
+        [
+          {text: 'OK'}
+        ]
+      )
+      return
+    }
     parent.state.command.persons.push(parent.state.command.person)
     this.setModalVisible(false)
     this.saveCommandData(true)
   }
+  this.deletePerson = (index, name) => {
+    Alert.alert(
+      'Внимание',
+      `Вы действительно ходите удалить участника команды "${name}"?`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {text: 'OK',
+          onPress: () => {
+            parent.state.command.persons.splice(index, 1)
+            this.saveCommandData(true)
+          }
+        }
+      ]
+    )
+  }
 
   this.saveCommandData = (isPerson) => {
-    console.log(parent.state.command)
     parent.setState((state) => {
       let loaded = state.loaded
       loaded = false
       return {loaded}
     })
     if (parent.state.command.id != null) {
-      console.log('edit')
       Storage._editCommandsData(parent, parent.state.command, isPerson)
     } else {
-      console.log('new')
       Storage._addCommandsData(parent, parent.state.command)
     }
   }
@@ -77,7 +102,7 @@ const CommandItemEditView = ({
   }
 
   return (
-    <View style={[viewStyle]}>
+    <ScrollView style={[viewStyle]}>
       <Modal isVisible={parent.state.modalVisible}>
         <View style={[personContainer, { backgroundColor: WHITE, padding: 5, width: w * 0.95 }]}>
           <Text style={{textAlign: 'center'}}>Укажите имя участника</Text>
@@ -107,18 +132,20 @@ const CommandItemEditView = ({
       <View style={{ alignItems: 'center'}}>
         <Text style={{textAlign: 'center'}}>Участники команды</Text>
         <View style={personContainer}>
-          {parent.state.command.persons.map((direction) => {
+          {parent.state.command.persons.map((direction, index) => {
+            const key = `person-${index}`
             return (
-              <View style={{flexDirection: 'row'}}>
-                <Ionicons name="md-person" color={WHITE} style={{fontSize: 22, marginLeft: 5}} />
-                <Text >{direction}</Text>
+              <View style={{flexDirection: 'row', alignItems: 'center', paddingTop: 5, paddingBottom: 5}} key={key} >
+                <Ionicons name="md-person" color={COLOR_5} style={{fontSize: 20, marginLeft: 5, paddingRight: 5}} />
+                <Text style={{fontSize: 20, marginLeft: 5, paddingRight: 5}}>{direction}</Text>
+                <IconButton onPress={() => { this.deletePerson(index, direction) }} iconName="md-close-circle-outline" iconColor={COLOR_5} buttonStyle={{marginLeft: 'auto'}} iconStyle={{fontSize: 20}} />
               </View>
             )
           })}
         </View>
-        <SubmitButton
+        <CurcleButton
           onPress={() => { this.setModalVisible(true) }}
-          text="Добавить" buttonStyle={{ backgroundColor: WHITE }} textStyle={{color: BLACK }} iconName="md-person-add" iconColor={BLACK}
+          buttonStyle={{ backgroundColor: WHITE, width: 60 }} textStyle={{color: BLACK }} iconName="md-person-add" iconColor={BLACK}
         />
 
       </View>
@@ -134,20 +161,19 @@ const CommandItemEditView = ({
         />
       </View>
       {parent.state.command.id != null &&
-        <View style={{marginTop: 15, flexDirection: 'row', justifyContent: 'center'}} >
+        <View style={{marginTop: 15, flexDirection: 'row', justifyContent: 'center', marginBottom: 15}} >
           <SubmitButton
             onPress={() => this.deleteCommandData()} text="Удалить команду" iconName="ios-trash"
           />
         </View>
       }
-    </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   viewStyle: {
-    flex: 1,
-    justifyContent: 'flex-start'
+    flex: 1
   },
   textStyle: {
     color: '#000',

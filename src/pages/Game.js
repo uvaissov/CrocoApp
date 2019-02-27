@@ -1,13 +1,22 @@
 import React from 'react'
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
-import { Header, CommandList, CommandItemEditView, SubmitButton } from '../component'
+import { View, ActivityIndicator, StyleSheet } from 'react-native'
+import { Header, CommandList, CommandItemEditView, SubmitButton, ShowCommandView, ShowGameView } from '../component'
 import { w, WHITE, COLOR_4, COLOR_1 } from '../constant/constants'
 import wordsData from '../constant/words.json'
 import Storage from '../data/Data'
 //import { cssSetting } from '../styles'
 
 export default class PlayGround extends React.Component {
-  state = {selected: (new Map(): Map<string, boolean>), dataBind: [], loaded: false, modalVisible: false, view: 'setting', command: {persons: []}, game: { commandId: null, word: null, usedWords: [] } };
+  state = {
+    selected: (new Map(): Map<string, boolean>),
+    dataBind: [],
+    loaded: false,
+    modalVisible: false,
+    view: 'setting',
+    command: {},
+    game: {}
+  }
+
   componentDidMount = async () => {
     Storage._getCommandsData(this)
   }
@@ -16,30 +25,55 @@ export default class PlayGround extends React.Component {
   _clearData = () => {
     Storage._removeCommandsData(this)
   }
-  _dataToState = (data, toView) => {
+  _showViewGame = () => {
     this.setState((state) => {
-      let loaded = state.loaded
-      let view = state.view
-      let dataBind = state.dataBind
-      dataBind = []
-      if (data) {
-        for (const item of data) {
-          dataBind.push(item)
+      const game = this.state.game
+      const dataBind = state.dataBind
+      let command
+      for (let i = 0; i < dataBind.length; i++) {
+        if (dataBind[i].id === game.commandId) {
+          if ((i + 1) < dataBind.length) {
+            command = dataBind[i + 1]
+          }
+          break
         }
       }
-      loaded = true
-      view = toView || 'setting'
-      return {dataBind, loaded, view}
+      if (!command) {
+        command = dataBind[0]
+      }
+      if (command) {
+        game.commandId = command.id
+        game.commandName = command.name
+        if (command.persons && command.persons.length > 0) {
+          if (game.personIdx && (game.personIdx + 1) < command.persons.length) {
+            game.personName = command.persons[(game.personIdx + 1)]
+            game.personIdx += 1
+          } else {
+            game.personName = command.persons[0]
+            game.personIdx = 0
+          }
+        }
+      }
+
+      let view = state.view
+      view = 'showCommand'
+      return {view, game}
     })
   }
-
-  _startGame = (page) => {
+  _startGame = () => {
+    this._nextWord()
     this.setState((state) => {
       let view = state.view
-      view = page
+      view = 'game'
       return {view}
     })
-    this._nextWord()
+  }
+  _startGame1 = () => {
+    this.setState((state) => {
+      let view = state.view
+      view = 'game1'
+      return {view}
+    })
   }
 
   _nextWord = () => {
@@ -60,7 +94,6 @@ export default class PlayGround extends React.Component {
     this.setState((state) => {
       const game = state.game
       game.word = word
-      console.log(game)
       return {game}
     })
   }
@@ -73,24 +106,35 @@ export default class PlayGround extends React.Component {
       />)
     }
     const { navigation } = this.props
+    //Режим Иформации о команде
+    if (this.state.view === 'showCommand') {
+      return (
+        <View style={styles.view}>
+          <Header
+            title="Игра" headerColor={COLOR_4} onPress={() => navigation.openDrawer()} leftIcon='ios-menu' leftColor={WHITE} parent={this} settingInit
+          />
+          <ShowCommandView parent={this} />
+        </View>
+      )
+    }
     //Режим ИГРЫ
     if (this.state.view === 'game') {
       return (
         <View style={styles.view}>
           <Header
-            title="Игра" headerColor={COLOR_4} onPress={() => navigation.openDrawer()} leftIcon='ios-menu' leftColor={WHITE}
+            title="Игра" headerColor={COLOR_4} onPress={() => navigation.openDrawer()} leftIcon='ios-menu' leftColor={WHITE} parent={this} settingInit
           />
-          <View style={styles.buttonContainer}>
-            <Text>
-              {this.state.game.word}
-            </Text>
-            <SubmitButton
-              onPress={() => this._nextWord()} text="Показать"
-            />
-            <SubmitButton
-              onPress={() => this._startGame('setting')} text="Настройка"
-            />
-          </View>
+          <ShowGameView parent={this} />
+        </View>
+      )
+    }//Режим ИГРЫ
+    if (this.state.view === 'game1') {
+      return (
+        <View style={styles.view}>
+          <Header
+            title="Игра" headerColor={COLOR_4} onPress={() => navigation.openDrawer()} leftIcon='ios-menu' leftColor={WHITE} parent={this} settingInit
+          />
+          <ShowGameView parent={this} />
         </View>
       )
     }
@@ -107,7 +151,7 @@ export default class PlayGround extends React.Component {
           />
           <View style={styles.buttonContainer}>
             <SubmitButton
-              onPress={() => this._startGame('game')} text="Начать" buttonStyle={{width: w / 1.5}}
+              onPress={() => this._showViewGame()} text="Начать" buttonStyle={{width: w / 1.5}}
             />
             <SubmitButton
               onPress={() => this._clearData()} text="Новая игра" buttonStyle={{width: w / 1.5}}

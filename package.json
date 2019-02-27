@@ -7,21 +7,24 @@
     "test": "jest"
   },
   "dependencies": {
+    "acorn": "^6.1.0",
+    "ajv": "^5.0.0",
     "babel-preset-env": "^1.7.0",
     "babelify": "^10.0.0",
     "browserify": "^16.2.3",
+    "install": "^0.12.2",
     "react": "16.6.3",
-    "react-native": "0.57.8",
-    "react-native-elements": "^1.0.0-beta7",
-    "react-native-gesture-handler": "^1.0.12",
+    "react-native": "^0.58.5",
+    "react-native-elements": "^1.1.0",
+    "react-native-gesture-handler": "^1.0.16",
     "react-native-modal": "^7.0.2",
     "react-native-touchable-scale": "^2.0.0",
     "react-native-uuid-generator": "^5.0.0",
-    "react-native-vector-icons": "^6.1.0",
-    "react-navigation": "^3.0.9"
+    "react-native-vector-icons": "^6.3.0",
+    "react-navigation": "^3.3.2"
   },
   "devDependencies": {
-    "babel-jest": "23.6.0",
+    "babel-jest": "^24.1.0",
     "eslint": "^5.11.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-equimper": "^2.2.2",
@@ -29,7 +32,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
-    "jest": "23.6.0",
+    "jest": "^24.1.0",
     "metro-react-native-babel-preset": "0.51.1",
     "react-test-renderer": "16.6.3"
   },

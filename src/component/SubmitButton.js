@@ -20,9 +20,11 @@ const SubmitButton = ({
       activeScale={0.9}
     >
       {iconName &&
-        <Ionicons name={iconName} color={iconColor || WHITE} style={{fontSize: 22, marginLeft: 5}} />
+        <Ionicons name={iconName} color={iconColor || WHITE} style={{fontSize: 22, marginLeft: 5, marginRight: 5}} />
       }
-      <Text style={[TextStyle, textStyle]}>{text}</Text>
+      {text &&
+        <Text style={[TextStyle, textStyle]}>{text}</Text>
+      }
     </TouchableScale>
   )
 }

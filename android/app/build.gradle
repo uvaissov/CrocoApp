@@ -138,6 +138,9 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-vector-icons')
+    implementation project(':react-native-uuid-generator')
+    implementation project(':react-native-gesture-handler')
     compile project(':react-native-uuid-generator')
     compile project(':react-native-gesture-handler')
     implementation fileTree(dir: "libs", include: ["*.jar"])

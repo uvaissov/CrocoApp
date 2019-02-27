@@ -4,26 +4,30 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { w } from '../constant/constants'
 
 const Header = ({
-  detail,
   leftIcon,
   leftColor,
   headerColor,
   title,
   onPress,
-  onPressSetting
+  settingInit,
+  parent
 }) => {
-  const { viewStyle, textStyle, leftButtonStyle } = styles
+  const { viewStyle, textStyle, leftButtonStyle, rightButtonStyle } = styles
   return (
     <View style={[viewStyle, {backgroundColor: headerColor }]}>
       {leftIcon &&
         <TouchableOpacity onPress={onPress}>
-          <Ionicons name={leftIcon} style={[leftButtonStyle, { paddingLeft: detail ? 10 : 25 }]} color={leftColor} />
+          <Ionicons name={leftIcon} style={[leftButtonStyle, { paddingLeft: 10 }]} color={leftColor} />
         </TouchableOpacity>
       }
-      <Text numberOfLines={1} ellipsizeMode="tail" style={[textStyle, { paddingLeft: leftIcon ? 10 : 0 }]}>{title}</Text>
-      <TouchableOpacity onPress={onPressSetting}>
-        <Ionicons name={leftIcon} style={[leftButtonStyle, { paddingLeft: detail ? 10 : 25 }]} color={leftColor} />
-      </TouchableOpacity>
+      <Text numberOfLines={1} ellipsizeMode="tail" style={[textStyle, { paddingLeft: leftIcon ? 10 : 0, width: settingInit ? w - 90 : w - 40 }]}>{title}</Text>
+      {
+        settingInit &&
+        <TouchableOpacity onPress={() => parent.setState({view: 'setting'})}>
+          <Ionicons name={'md-settings'} style={[rightButtonStyle]} color={leftColor} />
+        </TouchableOpacity>
+      }
+
     </View>
   )
 }
@@ -31,7 +35,7 @@ const Header = ({
 const styles = StyleSheet.create({
   viewStyle: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2},
     shadowOpacity: 0.2,
@@ -42,11 +46,14 @@ const styles = StyleSheet.create({
   textStyle: {
     color: '#fff',
     fontSize: 28,
-    width: w - 40,
     fontFamily: 'AvenirNext-DemiBold',
     paddingTop: 50
   },
   leftButtonStyle: {
+    paddingTop: 50,
+    fontSize: 35
+  },
+  rightButtonStyle: {
     paddingTop: 50,
     fontSize: 35
   }

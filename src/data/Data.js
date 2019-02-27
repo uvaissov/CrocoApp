@@ -19,7 +19,7 @@ export default class Storage extends React.Component {
         data.commands.push({ id: uuid, name: command.name, subtitle: command.subtitle })
       })
       await AsyncStorage.mergeItem(COMMANDS_STORE, JSON.stringify(data), () => {
-        parent._dataToState(data.commands)
+        Storage._dataToState(data.commands, parent)
       })
     } catch (error) {
       console.error(error)
@@ -37,8 +37,8 @@ export default class Storage extends React.Component {
         }
       }
       await AsyncStorage.mergeItem(COMMANDS_STORE, JSON.stringify(data), () => {
-        const view = isPerson === true ? 'editCommand' : 'settting'
-        parent._dataToState(data.commands, view)
+        const view = isPerson === true ? 'editCommand' : 'setting'
+        Storage._dataToState(data.commands, parent, view)
       })
     } catch (error) {
       console.error(error)
@@ -54,7 +54,7 @@ export default class Storage extends React.Component {
         }
       }
       await AsyncStorage.mergeItem(COMMANDS_STORE, JSON.stringify(data), () => {
-        parent._dataToState(data.commands)
+        Storage._dataToState(data.commands, parent)
       })
     } catch (error) {
       console.error(error)
@@ -64,25 +64,39 @@ export default class Storage extends React.Component {
   static _getCommandsData = async (parent) => {
     try {
       let data = await AsyncStorage.getItem(COMMANDS_STORE)
-      console.log('10')
       if (data === null) {
-        console.log('13')
         data = { commands: [] }
         await UUIDGenerator.getRandomUUID().then((uuid) => {
-          data.commands.push({ id: uuid, name: 'Команда 1', subtitle: 'Капитан 1', persons: [] })
+          data.commands.push({ id: uuid, name: 'Команда 1', persons: [] })
         })
         await UUIDGenerator.getRandomUUID().then((uuid) => {
-          data.commands.push({ id: uuid, name: 'Команда 2', subtitle: 'Капитан 2', persons: [] })
+          data.commands.push({ id: uuid, name: 'Команда 2', persons: [] })
         })
         await AsyncStorage.setItem(COMMANDS_STORE, JSON.stringify(data), () => {
-          parent._dataToState(data.commands)
+          Storage._dataToState(data.commands, parent)
         })
       } else {
-        console.log('45')
-        parent._dataToState(JSON.parse(data).commands)
+        Storage._dataToState(JSON.parse(data).commands, parent)
       }
     } catch (error) {
       console.error(error)
     }
+  }
+
+  static _dataToState = (data, parent, toView) => {
+    parent.setState((state) => {
+      let loaded = state.loaded
+      let view = state.view
+      let dataBind = state.dataBind
+      dataBind = []
+      if (data) {
+        for (const item of data) {
+          dataBind.push(item)
+        }
+      }
+      loaded = true
+      view = toView || 'setting'
+      return {dataBind, loaded, view}
+    })
   }
 }

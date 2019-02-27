@@ -10,12 +10,24 @@ const CommandItem = ({
   this._onPress = () => {
     onPressItem(item)
   }
+  this.generateSubTitle = (persons) => {
+    let subTitle = null
+    for (const person of persons) {
+      if (person) {
+        if (subTitle === null) {
+          subTitle = person
+        } else {
+          subTitle += `, ${person}`
+        }
+      }
+    }
+    return subTitle
+  }
 
   return (
     <ListItem
-      Component
       title={item.name}
-      subtitle={item.subtitle}
+      subtitle={this.generateSubTitle(item.persons)}
       titleStyle={styles.itemTitle}
       containerStyle={styles.itemContainer}
       onPress={this._onPress}
