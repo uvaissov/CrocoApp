@@ -1,8 +1,8 @@
 import React from 'react'
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 //import Ionicons from 'react-native-vector-icons/Ionicons'
-import { SubmitButton, CurcleButton } from './'
-import { w, BLACK, WHITE, COLOR_2, COLOR_4, COLOR_5 } from '../constant/constants'
+import { SubmitButton, TimerInput } from './'
+import { w, WHITE, COLOR_2, COLOR_4, COLOR_5 } from '../constant/constants'
 
 const ShowGameView = ({
   parent
@@ -26,11 +26,7 @@ const ShowGameView = ({
           <Text style={{color: WHITE, fontSize: 20, textDecorationLine: 'underline', margin: 10}}>Изменить слово</Text>
         </TouchableOpacity>
       </View>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <CurcleButton iconName='md-remove' iconColor={BLACK} />
-
-        <CurcleButton iconName='md-add' iconColor={BLACK} />
-      </View>
+      <TimerInput value="60" />
       <SubmitButton
         onPress={() => parent._startGame1()} text="НАЧАТЬ"
       />
