@@ -14,7 +14,9 @@ export default class PlayGround extends React.Component {
     modalVisible: false,
     view: 'setting',
     command: {},
-    game: {}
+    game: {},
+    types: [{label: 'Слова', value: 'word'}, {label: 'Фразы', value: 'phrase'}],
+    levels: [{label: 'Простой', value: 'easy'}, {label: 'Средний', value: 'middle'}, {label: 'Сложный', value: 'hard'}]
   }
 
   componentDidMount = async () => {
@@ -54,9 +56,13 @@ export default class PlayGround extends React.Component {
           }
         }
       }
+      if (!game.timeout) {
+        game.timeout = 60
+      }
 
       let view = state.view
       view = 'showCommand'
+      console.log(game)
       return {view, game}
     })
   }

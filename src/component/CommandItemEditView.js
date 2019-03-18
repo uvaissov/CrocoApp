@@ -131,7 +131,7 @@ const CommandItemEditView = ({
       />
       <View style={{ alignItems: 'center'}}>
         <Text style={{textAlign: 'center'}}>Участники команды</Text>
-        <View style={personContainer}>
+        <View style={[personContainer, { marginBottom: 5 }]}>
           {parent.state.command.persons.map((direction, index) => {
             const key = `person-${index}`
             return (
